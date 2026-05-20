@@ -14,7 +14,6 @@ public class LadderLightScript : MonoBehaviour {
 
          if (LadderColl.Raycast(ray, out RaycastHit hit, range)) {
             L.SetActive(!L.activeSelf);
-            Debug.Log(hit.collider.name);
          }
       }
    }

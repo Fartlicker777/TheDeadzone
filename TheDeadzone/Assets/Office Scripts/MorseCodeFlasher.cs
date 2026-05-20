@@ -7,30 +7,48 @@ public class MorseCodeFlasher : MonoBehaviour {
 
    float UnitLength = .2f;
 
+   public int MorseStage = 0;
+   public int LetterIndex = 0;
+
    string[] MorseLetters = { ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.." };
    string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
    public Light Flasher;
    public GameObject Hider;
 
-   int[] ChosenLetters = { 0, 0, 0, 0, 0};
+   int[] ChosenLetters = new int[25];
 
-   string MorseBuilder = "";
+   string[][] MorseSequences = new string[][] { new string[] { "", "", "", "", ""}, new string[] { "", "", "", "", "" }, new string[] { "", "", "", "", "" }, new string[] { "", "", "", "", "" }, new string[] { "", "", "", "", "" } };
+
+   bool WaitForLetterReset;
 
    void Start () {
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < 25; i++) {
          ChosenLetters[i] = rnd.Range(0, 26);
-         MorseBuilder += MorseLetters[ChosenLetters[i]];
-         MorseBuilder += "|||";
+         MorseSequences[i / 5][i % 5] = MorseLetters[ChosenLetters[i]].ToString();
       }
-      MorseBuilder += "||||";
+      
       Debug.Log(Alphabet[ChosenLetters[0]].ToString() + Alphabet[ChosenLetters[1]].ToString() + Alphabet[ChosenLetters[2]].ToString() + Alphabet[ChosenLetters[3]].ToString() + Alphabet[ChosenLetters[4]].ToString());
       StartCoroutine(Sequence());
    }
 
+   public void IncrementLetterIndex () {
+      if (LetterIndex < 4) {
+         LetterIndex++;
+      }
+   }
+
+   public void DecrementLetterIndex () {
+      if (LetterIndex > 0) {
+         LetterIndex--;
+      }
+   }
+
    IEnumerator Sequence () {
       while (true) {
-         for (int i = 0; i < MorseBuilder.Length; i++) {
-            if (MorseBuilder[i] == '.') {
+         int CurIndex = LetterIndex;
+
+         for (int i = 0; i < MorseSequences[MorseStage][CurIndex].Length; i++) {
+            if (MorseSequences[MorseStage][CurIndex][i] == '.') {
                Flasher.gameObject.SetActive(true);
                Hider.SetActive(false);
                yield return new WaitForSeconds(UnitLength);
@@ -38,7 +56,7 @@ public class MorseCodeFlasher : MonoBehaviour {
                Flasher.gameObject.SetActive(false);
                yield return new WaitForSeconds(UnitLength);
             }
-            if (MorseBuilder[i] == '-') {
+            if (MorseSequences[MorseStage][CurIndex][i] == '-') {
                Flasher.gameObject.SetActive(true);
                Hider.SetActive(false);
                yield return new WaitForSeconds(3 * UnitLength);
@@ -46,10 +64,8 @@ public class MorseCodeFlasher : MonoBehaviour {
                Flasher.gameObject.SetActive(false);
                yield return new WaitForSeconds(UnitLength);
             }
-            if (MorseBuilder[i] == '|') {
-               yield return new WaitForSeconds(UnitLength);
-            }
          }
+         yield return new WaitForSeconds(3 * UnitLength);
       }
    }
 
