@@ -5,6 +5,9 @@ using rnd = UnityEngine.Random;
 
 public class MorseCodeFlasher : MonoBehaviour {
 
+   public AnswerInput AnsInp;
+   public WindowBlind Window;
+
    float UnitLength = .2f;
 
    public int MorseStage = 0;
@@ -15,9 +18,14 @@ public class MorseCodeFlasher : MonoBehaviour {
    public Light Flasher;
    public GameObject Hider;
 
+   Coroutine FlashMorseCor;
+   Coroutine InputComparisonCor;
+   public float WaitTime = 1f;
+
    int[] ChosenLetters = new int[25];
 
-   string[][] MorseSequences = new string[][] { new string[] { "", "", "", "", ""}, new string[] { "", "", "", "", "" }, new string[] { "", "", "", "", "" }, new string[] { "", "", "", "", "" }, new string[] { "", "", "", "", "" } };
+   string[][] MorseSequences = new string[][] { new string[] { "", "", "", "", "" }, new string[] { "", "", "", "", "" }, new string[] { "", "", "", "", "" }, new string[] { "", "", "", "", "" }, new string[] { "", "", "", "", "" } };
+   public string[] StageAnswers = new string[] { "", "", "", "", "" };
 
    bool WaitForLetterReset;
 
@@ -25,10 +33,31 @@ public class MorseCodeFlasher : MonoBehaviour {
       for (int i = 0; i < 25; i++) {
          ChosenLetters[i] = rnd.Range(0, 26);
          MorseSequences[i / 5][i % 5] = MorseLetters[ChosenLetters[i]].ToString();
+         StageAnswers[i / 5] += Alphabet[ChosenLetters[i]].ToString();
       }
-      
-      Debug.Log(Alphabet[ChosenLetters[0]].ToString() + Alphabet[ChosenLetters[1]].ToString() + Alphabet[ChosenLetters[2]].ToString() + Alphabet[ChosenLetters[3]].ToString() + Alphabet[ChosenLetters[4]].ToString());
-      StartCoroutine(Sequence());
+
+      for (int i = 0; i < 5; i++) {
+         Debug.Log(StageAnswers[i]);
+      }
+      FlashMorseCor = StartCoroutine(Sequence());
+   }
+
+   public void CompareInput (string q) {
+      InputComparisonCor = StartCoroutine(Comp(q));
+   }
+
+   IEnumerator Comp (string q) {
+      yield return new WaitForSeconds(WaitTime);
+      if (q == StageAnswers[MorseStage]) {
+         if (MorseStage == 4) {
+            StopCoroutine(FlashMorseCor);
+         }
+         else {
+            MorseStage++;
+            LetterIndex = 0;
+         }
+      }
+      AnsInp.ResetUserInput();
    }
 
    public void IncrementLetterIndex () {
@@ -46,18 +75,23 @@ public class MorseCodeFlasher : MonoBehaviour {
    IEnumerator Sequence () {
       while (true) {
          int CurIndex = LetterIndex;
+         int CurStage = MorseStage;
 
-         for (int i = 0; i < MorseSequences[MorseStage][CurIndex].Length; i++) {
-            if (MorseSequences[MorseStage][CurIndex][i] == '.') {
-               Flasher.gameObject.SetActive(true);
+         for (int i = 0; i < MorseSequences[CurStage][CurIndex].Length; i++) {
+            if (MorseSequences[CurStage][CurIndex][i] == '.') {
+               if (!Window.ClosedWindow) {
+                  Flasher.gameObject.SetActive(true);
+               }
                Hider.SetActive(false);
                yield return new WaitForSeconds(UnitLength);
                Hider.SetActive(true);
                Flasher.gameObject.SetActive(false);
                yield return new WaitForSeconds(UnitLength);
             }
-            if (MorseSequences[MorseStage][CurIndex][i] == '-') {
-               Flasher.gameObject.SetActive(true);
+            if (MorseSequences[CurStage][CurIndex][i] == '-') {
+               if (!Window.ClosedWindow) {
+                  Flasher.gameObject.SetActive(true);
+               }
                Hider.SetActive(false);
                yield return new WaitForSeconds(3 * UnitLength);
                Hider.SetActive(true);
