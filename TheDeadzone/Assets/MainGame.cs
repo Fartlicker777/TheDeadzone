@@ -13,6 +13,9 @@ public class MainGame : MonoBehaviour {
 
    public CameraSystem CamSystem;
 
+   public MorseCodeFlasher MCF;
+   public bool GameStarted;
+   public Camera p;
    public Camera c;
    float CamRotationX = 0f;
    float CamRotationY = 0f;
@@ -26,8 +29,65 @@ public class MainGame : MonoBehaviour {
 
    public bool InputtingAnswer;
 
+   public TheLovers Lovers;
+   public TheEmperor Emperor;
+   public TheMagician Magician;
+   public TheHangedMan HangedMan;
+   public Death DeathAI;
+   public TheFool Fool;
+
    void Start () {
+      float[] Distances = new float[32];
+      Distances[6] = 5f;
+      //c.nearClipPlane = Distances;
+
       StartCoroutine(GlobalTimer());
+   }
+
+   void StartCampaign () {
+      StartCoroutine(WakeUp());
+
+   }
+
+   public void StartStageOne () {
+      GameStarted = true;
+      MCF.InitializeMorse();
+   }
+
+   void StartStageTwo () {
+      Lovers.InitializeLovers(3);
+      Emperor.InitializeTheEmperor(3);
+   }
+
+   void StartStageThree () {
+      Magician.InitializeMagician(3);
+      DeathAI.InitializeDeath(3);
+   }
+
+   void StartStageFour () {
+      Fool.InitializeFool(3);
+      HangedMan.InitializeHangedMan(3);
+   }
+
+   public void ProcessStageAdvance (int s) {
+      if (s == 1) {
+         StartStageTwo();
+      }
+      else if (s == 2) {
+         StartStageThree();
+      }
+      else if (s == 3) {
+         StartStageFour();
+      }
+      else {
+
+      }
+   }
+
+
+
+   IEnumerator WakeUp () {
+      yield return null;
    }
 
    IEnumerator GlobalTimer () {
@@ -42,7 +102,7 @@ public class MainGame : MonoBehaviour {
       if (Input.GetKeyDown(KeyCode.Q)) {
          MouseElement += 100000; 
       }
-      Paranoia = GameTime + MouseElement / 1000;
+      Paranoia = GameTime + MouseElement / 100;
       //Debug.Log("Paranoia = " + Paranoia);
 
       if (Input.GetKeyDown(KeyCode.Escape)) {
@@ -69,5 +129,6 @@ public class MainGame : MonoBehaviour {
       CamRotationX += Input.GetAxis("Mouse Y") * -MouseSensitivity;
       CamRotationY += Input.GetAxis("Mouse X") * MouseSensitivity;
       c.transform.localEulerAngles = new Vector3(CamRotationX, CamRotationY, 0);
+      p.transform.localEulerAngles = new Vector3(CamRotationX, CamRotationY, 0);
    }
 }

@@ -17,6 +17,10 @@ public class AnswerInput : MonoBehaviour {
    public MorseCodeFlasher MCF;
    public TextMeshPro InputTMP;
 
+   public GameObject[] StageLEDs;
+   public Material OffColor;
+   public Material OnColor;
+
    string UserInput = "";
 
    bool CanToggleInputtingAnswer = true;
@@ -29,6 +33,10 @@ public class AnswerInput : MonoBehaviour {
 
    private void OnDisable () {
       Keyboard.current.onTextInput -= OnTextInput;
+   }
+
+   public void UpdateLEDColors (int LEDIndex) {
+      StageLEDs[LEDIndex].GetComponent<MeshRenderer>().material = OnColor;
    }
 
    void OnTextInput (char ch) {

@@ -18,6 +18,16 @@ public class TheEmperor : MonoBehaviour {
    public bool CanKillYou;
    public float MinCooldown = 15f;
    bool CanAttack = true;
+
+   void Start () {
+      Battleship.transform.localPosition = new Vector3(-171.4f, 1.15f, -29.1f);
+   }
+
+   public void InitializeTheEmperor (int AI) {
+      AILevel = AI;
+      Battleship.transform.localPosition = new Vector3(-171.4f, 1.15f, -29.1f);
+      Attacking = StartCoroutine(MovementOpportunities());
+   } 
    
    IEnumerator Attack () {
       Battleship.transform.localPosition = new Vector3(-171.4f, 1.15f, -29.1f);
@@ -63,10 +73,6 @@ public class TheEmperor : MonoBehaviour {
       }
       yield return new WaitForSeconds(Cooldown);
       CanAttack = true;
-   }
-
-   void Start () {
-      Attacking = StartCoroutine(MovementOpportunities());
    }
 
    IEnumerator MovementOpportunities () {

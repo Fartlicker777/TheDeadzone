@@ -9,6 +9,7 @@ public class MorseInput : MonoBehaviour {
    public Collider SendButton;
 
    public MorseCodeFlasher MCF;
+   public MainGame Game;
 
    public string UserInput = "";
 
@@ -18,6 +19,9 @@ public class MorseInput : MonoBehaviour {
       }
       if (UserInput == ".--.") {
          MCF.DecrementLetterIndex();
+      }
+      if (UserInput == "..-" && !Game.GameStarted) {
+         Game.StartStageOne();
       }
       UserInput = "";
    }

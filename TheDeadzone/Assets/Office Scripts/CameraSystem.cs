@@ -25,6 +25,9 @@ public class CameraSystem : MonoBehaviour {
 
    void EnterCams () {
       CameraButtons.SetActive(true);
+      if (SelectedCam == 6) {
+         RenderCam.cullingMask &= ~(1 << LayerMask.NameToLayer("Water"));
+      }
       RenderCam.gameObject.transform.localPosition = CameraPositions[SelectedCam];
       RenderCam.gameObject.transform.localEulerAngles = CameraRotations[SelectedCam];
       PlayerCam.gameObject.transform.localPosition = CameraPositions[SelectedCam];
@@ -41,6 +44,7 @@ public class CameraSystem : MonoBehaviour {
    }
 
    public void ExitCams () {
+      RenderCam.cullingMask |= 1 << LayerMask.NameToLayer("Water");
       CameraButtons.SetActive(false);
       RenderCam.gameObject.transform.localPosition = InitialCamPosition;
       RenderCam.gameObject.transform.localEulerAngles = InitialCamRotation;
@@ -69,6 +73,7 @@ public class CameraSystem : MonoBehaviour {
       }
       if (Input.GetKeyDown(KeyCode.Alpha6)) {
          UpdateSelectedCam(5);
+         RenderCam.cullingMask &= ~(1 << LayerMask.NameToLayer("Water"));
       }
       if (Input.GetMouseButtonDown(0)) {
          Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f));

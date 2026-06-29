@@ -7,6 +7,7 @@ public class MorseCodeFlasher : MonoBehaviour {
 
    public AnswerInput AnsInp;
    public WindowBlind Window;
+   public MainGame Game;
 
    float UnitLength = .2f;
 
@@ -30,6 +31,11 @@ public class MorseCodeFlasher : MonoBehaviour {
    bool WaitForLetterReset;
 
    void Start () {
+      Flasher.gameObject.SetActive(false);
+      Hider.SetActive(true);
+   }
+
+   public void InitializeMorse () {
       for (int i = 0; i < 25; i++) {
          ChosenLetters[i] = rnd.Range(0, 26);
          MorseSequences[i / 5][i % 5] = MorseLetters[ChosenLetters[i]].ToString();
@@ -49,11 +55,13 @@ public class MorseCodeFlasher : MonoBehaviour {
    IEnumerator Comp (string q) {
       yield return new WaitForSeconds(WaitTime);
       if (q == StageAnswers[MorseStage]) {
+         AnsInp.UpdateLEDColors(MorseStage);
          if (MorseStage == 4) {
             StopCoroutine(FlashMorseCor);
          }
          else {
             MorseStage++;
+            Game.ProcessStageAdvance(MorseStage);
             LetterIndex = 0;
          }
       }
