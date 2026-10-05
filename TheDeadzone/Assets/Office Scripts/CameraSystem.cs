@@ -30,8 +30,8 @@ public class CameraSystem : MonoBehaviour {
       }
       RenderCam.gameObject.transform.localPosition = CameraPositions[SelectedCam];
       RenderCam.gameObject.transform.localEulerAngles = CameraRotations[SelectedCam];
-      PlayerCam.gameObject.transform.localPosition = CameraPositions[SelectedCam];
-      PlayerCam.gameObject.transform.localEulerAngles = CameraRotations[SelectedCam];
+      //PlayerCam.gameObject.transform.localPosition = CameraPositions[SelectedCam];
+      //PlayerCam.gameObject.transform.localEulerAngles = CameraRotations[SelectedCam];
    }
 
    public void UpdateSelectedCam (int i) {
@@ -39,8 +39,8 @@ public class CameraSystem : MonoBehaviour {
       CameraButtons.SetActive(true);
       RenderCam.gameObject.transform.localPosition = CameraPositions[SelectedCam];
       RenderCam.gameObject.transform.localEulerAngles = CameraRotations[SelectedCam];
-      PlayerCam.gameObject.transform.localPosition = CameraPositions[SelectedCam];
-      PlayerCam.gameObject.transform.localEulerAngles = CameraRotations[SelectedCam];
+      //PlayerCam.gameObject.transform.localPosition = CameraPositions[SelectedCam];
+      //PlayerCam.gameObject.transform.localEulerAngles = CameraRotations[SelectedCam];
    }
 
    public void ExitCams () {

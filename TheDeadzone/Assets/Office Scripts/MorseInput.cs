@@ -20,9 +20,6 @@ public class MorseInput : MonoBehaviour {
       if (UserInput == ".--.") {
          MCF.DecrementLetterIndex();
       }
-      if (UserInput == "..-" && !Game.GameStarted) {
-         Game.StartStageOne();
-      }
       UserInput = "";
    }
 
@@ -35,6 +32,10 @@ public class MorseInput : MonoBehaviour {
          a.transform.localPosition += new Vector3(0, +0.03f, 0);
          yield return new WaitForSeconds(0.005f);
       }
+   }
+
+   public void ResetInput () {
+      UserInput = "";
    }
 
    private void Update () {

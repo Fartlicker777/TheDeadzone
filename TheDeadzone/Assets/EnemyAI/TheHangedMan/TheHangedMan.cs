@@ -13,14 +13,24 @@ public class TheHangedMan : MonoBehaviour {
 
    public GameObject HangedManBody;
 
+   Coroutine MO;
+
    void Start () {
       HangedManBody.SetActive(false);
    }
 
+   public void Deactivate () {
+      if (MO != null) {
+         StopCoroutine(MO);
+      }
+      HangedManBody.SetActive(false);
+   }
+
    public void InitializeHangedMan (int AI) {
+      HangedManBody.SetActive(true);
       AILevel = AI;
       Subtractor = (int) (10000 / ((0.0672269 * AILevel * AILevel - 3.01681 * AILevel + 53.4454)));
-      StartCoroutine(MovementOpportunity());
+      MO = StartCoroutine(MovementOpportunity());
    }
 
    IEnumerator MovementOpportunity () {
@@ -55,7 +65,7 @@ public class TheHangedMan : MonoBehaviour {
          yield return null;
       }
 
-      Debug.Log("Time of Death: " + Game.GameTime + " " + butt);
+      Game.HandleDeath("The Hanged Man");
    }
 
 

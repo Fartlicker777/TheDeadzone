@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WindowBlind : MonoBehaviour {
 
+   public MainGame Game;
+
    public Collider Window;
    public MorseCodeFlasher MCF;
 
@@ -44,6 +46,9 @@ public class WindowBlind : MonoBehaviour {
    }
 
    void Update () {
+      if (!Game.Ingame) {
+         return;
+      }
       if (Input.GetMouseButtonDown(0)) {
          Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f));
 

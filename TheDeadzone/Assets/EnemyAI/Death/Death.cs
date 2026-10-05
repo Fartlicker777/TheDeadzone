@@ -22,13 +22,21 @@ public class Death : MonoBehaviour {
 
    bool CanAttack = true;
 
-   void Start () {
-      
+   Coroutine MO;
+   Coroutine AttackCor;
+
+   public void Deactivate () {
+      if (MO != null) {
+         StopCoroutine(MO);
+      }
+      if (AttackCor != null) {
+         StopCoroutine(AttackCor);
+      }
    }
 
    public void InitializeDeath (int AI) {
       AILevel = AI;
-      StartCoroutine(MovementOpportunity());
+      MO = StartCoroutine(MovementOpportunity());
    }
 
    IEnumerator MovementOpportunity () {
@@ -37,7 +45,7 @@ public class Death : MonoBehaviour {
          if ((int) (Game.GameTime / (Game.Paranoia + 1)) % 4 == 0 && CanAttack) {
             CanAttack = false;
             StartCoroutine(Move());
-            StartCoroutine(Attack());
+            AttackCor = StartCoroutine(Attack());
          }
          yield return null;
       }
@@ -67,7 +75,7 @@ public class Death : MonoBehaviour {
          yield return new WaitForSeconds(.25f);
       }
       if (!LadderLight.LitUp) {
-         Debug.Log("Dead to rights");
+         Game.HandleDeath("Death");
       }
       StartCoroutine(CooldownWait());
    }

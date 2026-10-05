@@ -21,6 +21,7 @@ public class MorseCodeFlasher : MonoBehaviour {
 
    Coroutine FlashMorseCor;
    Coroutine InputComparisonCor;
+   Coroutine FlashMenu;
    public float WaitTime = 1f;
 
    int[] ChosenLetters = new int[25];
@@ -33,6 +34,7 @@ public class MorseCodeFlasher : MonoBehaviour {
    void Start () {
       Flasher.gameObject.SetActive(false);
       Hider.SetActive(true);
+      StartCoroutine(MainMenuFlash("Memento Mori"));
    }
 
    public void InitializeMorse () {
@@ -52,8 +54,25 @@ public class MorseCodeFlasher : MonoBehaviour {
       InputComparisonCor = StartCoroutine(Comp(q));
    }
 
+   public void Reset () {
+      for (int i = 0; i < 5; i++) {
+         StageAnswers[i] = "";
+      }
+      if (InputComparisonCor != null) {
+         StopCoroutine(InputComparisonCor);
+      }
+      if (FlashMorseCor != null) {
+         StopCoroutine(FlashMorseCor);
+      }
+      MorseStage = 0;
+      LetterIndex = 0;
+   }
+
    IEnumerator Comp (string q) {
       yield return new WaitForSeconds(WaitTime);
+      if (q == "RESET") {
+         Game.HandleDeath("The Fool");
+      }
       if (q == StageAnswers[MorseStage]) {
          AnsInp.UpdateLEDColors(MorseStage);
          if (MorseStage == 4) {
@@ -111,8 +130,57 @@ public class MorseCodeFlasher : MonoBehaviour {
       }
    }
 
+   public void StopMainMenuFlash () {
+      Hider.SetActive(true);
+      StopAllCoroutines();
+      StopCoroutine(FlashMenu);
+   }
+
+   IEnumerator MainMenuFlash (string input) {
+      input = input.Replace(" ", "^").ToUpper();
+      string BeginningSequence = "";
+      for (int i = 0; i < input.Length; i++) {
+         if (input[i] == '^') {
+            BeginningSequence += "|||||||";
+         }
+         for (int j = 0; j < 26; j++) {
+            if (input[i] == Alphabet[j]) {
+               BeginningSequence += MorseLetters[j];
+               BeginningSequence += "|||";
+            }
+         }
+         BeginningSequence += "||";
+      }
+
+      while (!Game.Ingame) {
+         for (int i = 0; i < BeginningSequence.Length; i++) {
+            if (BeginningSequence[i] == '.') {
+               Hider.SetActive(false);
+               yield return new WaitForSeconds(UnitLength);
+               Hider.SetActive(true);
+               Flasher.gameObject.SetActive(false);
+               yield return new WaitForSeconds(UnitLength);
+            }
+            if (BeginningSequence[i] == '-') {
+               Hider.SetActive(false);
+               yield return new WaitForSeconds(3 * UnitLength);
+               Hider.SetActive(true);
+               Flasher.gameObject.SetActive(false);
+               yield return new WaitForSeconds(UnitLength);
+            }
+            if (BeginningSequence[i] == '|') {
+               yield return new WaitForSeconds(UnitLength);
+            }
+         }
+
+         yield return new WaitForSeconds(7 * UnitLength);
+      }
+   }
+
    // Update is called once per frame
    void Update () {
-
+      if (!Game.Ingame && FlashMenu == null) {
+         FlashMenu = StartCoroutine(MainMenuFlash("Memento Mori"));
+      }
    }
 }

@@ -18,6 +18,14 @@ public class TheMagician : MonoBehaviour {
 
    public AudioSource[] Knocks;
 
+   Coroutine MO;
+
+   public void Deactivate () {
+      if (MO != null) {
+         StopCoroutine(MO);
+      }
+   }
+
    void Start () {
       for (int i = 0; i < 3; i++) {
          LeftPositions[i].SetActive(false);
@@ -30,7 +38,7 @@ public class TheMagician : MonoBehaviour {
 
       DefaultMovementTimer = 7f * AILevel * AILevel / 85 - 261f * AILevel / 85 + 603f / 17;
 
-      StartCoroutine(MovementOpportunity());
+      MO = StartCoroutine(MovementOpportunity());
    }
 
    IEnumerator MovementOpportunity () {
@@ -80,10 +88,10 @@ public class TheMagician : MonoBehaviour {
          }
 
          if (!Door.LeftBarricaded && GoingLeft) {
-            Debug.Log("Left mag died at " + Game.GameTime);
+            Game.HandleDeath("The Magician");
          }
          if (Door.LeftBarricaded && !GoingLeft) {
-            Debug.Log("Right mag died at " + Game.GameTime);
+            Game.HandleDeath("The Magician");
          }
 
          Stage = 0;

@@ -19,6 +19,24 @@ public class TheEmperor : MonoBehaviour {
    public float MinCooldown = 15f;
    bool CanAttack = true;
 
+   public void Deactivate () {
+      if (Attacking != null) {
+         StopCoroutine(Attacking);
+      }
+      if (AttackAnim != null) {
+         StopCoroutine(AttackAnim);
+      }
+      Battleship.transform.localPosition = new Vector3(-171.4f, 1.15f, -29.1f);
+      if (FlareShotAS.isPlaying) {
+         FlareShotAS.Stop();
+      }
+      if (FoghornAS.isPlaying) {
+         FoghornAS.Stop();
+      }
+      CanAttack = true;
+      CanKillYou = false;
+   }
+
    void Start () {
       Battleship.transform.localPosition = new Vector3(-171.4f, 1.15f, -29.1f);
    }
@@ -90,12 +108,12 @@ public class TheEmperor : MonoBehaviour {
 
    // Update is called once per frame
    void Update () {
-      if (Input.GetKeyDown(KeyCode.A)) {
+      /*if (false) {
          CanAttack = false;
          AttackAnim = StartCoroutine(Attack());
-      }
+      }*/
       if (CanKillYou && !Window.ClosedWindow) {
-         Debug.Log("DEAD");
+         Game.HandleDeath("The Emperor");
       }
    }
 }

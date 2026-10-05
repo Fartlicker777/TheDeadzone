@@ -43,6 +43,18 @@ public class TheLovers : MonoBehaviour {
 
    public float dummytimer;
 
+   Coroutine LMO;
+   Coroutine RMO;
+
+   public void Deactivate () {
+      if (LMO != null) {
+         StopCoroutine(LMO);
+      }
+      if (RMO != null) {
+         StopCoroutine(RMO);
+      }
+   }
+
    private void Start () {
       for (int i = 0; i < 3; i++) {
          LeftLovers[i].SetActive(false);
@@ -137,7 +149,7 @@ This bit is so that if they are in the same stage, then they need to move at the
             LeftLovers[i].SetActive(false);
          }
          if (!Door.LeftBarricaded) {
-            Debug.Log("Left died at " + Game.GameTime);
+            Game.HandleDeath("The Lovers");
          }
          LeftCycles++;
          LeftStage = 0;
@@ -211,7 +223,7 @@ This bit is so that if they are in the same stage, then they need to move at the
          RightKnock.Play();
 
          if (Door.LeftBarricaded) {
-            Debug.Log("Right died at " + Game.GameTime);
+            Game.HandleDeath("The Lovers");
          }
          RightCycles++;
          RightStage = 0;

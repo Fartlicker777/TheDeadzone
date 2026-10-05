@@ -29,6 +29,18 @@ public class TheFool : MonoBehaviour {
 
    int[] Landmines = new int[6];
 
+   Coroutine MO;
+   Coroutine Switchup;
+
+   public void Deactivate () {
+      if (MO != null) {
+         StopCoroutine(MO);
+      }
+      if (Switchup != null) {
+         StopCoroutine(Switchup);
+      }
+   }
+
    void Start () {
       for (int i = 0; i < 36; i++) {
          LightGO[i].GetComponent<MeshRenderer>().material = Off;
@@ -50,7 +62,7 @@ public class TheFool : MonoBehaviour {
          FoolPos = rnd.Range(0, 6);
       } while (Landmines[0] == FoolPos && Landmines[1] != FoolPos);
       LightGO[FoolPos].GetComponent<MeshRenderer>().material = FoolColored;
-      StartCoroutine(MovementOpportunity());
+      MO = StartCoroutine(MovementOpportunity());
    }
 
    void SetLure (int index) {
@@ -71,7 +83,7 @@ public class TheFool : MonoBehaviour {
    }
 
    IEnumerator MovementOpportunity () {
-      StartCoroutine(ChangeLandmines());
+      Switchup = StartCoroutine(ChangeLandmines());
       while (true) {
          LightGO[FoolPos].GetComponent<MeshRenderer>().material = Off;
          if (LureIndex == -1) {
@@ -101,13 +113,13 @@ public class TheFool : MonoBehaviour {
          }
 
          if (FoolPos > 35) {
-            Debug.Log("Fooled");
+            Game.HandleDeath("The Fool");
             yield break;
          }
 
          for (int i = 0; i < 6; i++) {
             if (Landmines[i] + i * 6 == FoolPos) {
-               Debug.Log("Fooled");
+               Game.HandleDeath("The Fool");
                yield break;
             }
          }
@@ -136,6 +148,9 @@ public class TheFool : MonoBehaviour {
    }
 
    void Update () {
+      if (AILevel == 0) {
+         return;
+      }
       if (Input.GetMouseButtonDown(0)) {
          Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f));
 

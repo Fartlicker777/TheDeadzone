@@ -39,6 +39,13 @@ public class AnswerInput : MonoBehaviour {
       StageLEDs[LEDIndex].GetComponent<MeshRenderer>().material = OnColor;
    }
 
+   public void Reset () {
+      for (int i = 0; i < StageLEDs.Count(); i++) {
+         StageLEDs[i].GetComponent<MeshRenderer>().material = OffColor;
+      }
+      ResetUserInput();
+   }
+
    void OnTextInput (char ch) {
       if (Game.InputtingAnswer && UserInput.Length < 5) {
          ch = Char.ToUpper(ch);
